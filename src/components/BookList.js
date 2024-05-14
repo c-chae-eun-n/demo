@@ -1,4 +1,8 @@
+import { Box, Button, HStack, Heading, Icon, IconButton, Input, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
+import { MdOutlineOndemandVideo } from "react-icons/md";
+import { PiSunDimThin, PiSunFill, PiSunThin, PiVideoFill } from 'react-icons/pi';
+import { RiMoonClearFill} from 'react-icons/ri';
 
 const BookList = () => {
     // useState는 화면 랜더링에 반영됨
@@ -8,6 +12,11 @@ const BookList = () => {
 
     // useRef는 화면 랜더링 반영되지 않는 참조값
     const pageCount = useRef(1);                  // 1page
+
+    // Chakra UI 에서 제공하는 훅
+    const { colorMode, toggleColorMode } = useColorMode();
+    const color = useColorModeValue('pink.200', 'pink.100');
+    const buttonScheme = useColorModeValue('yellow', 'yellow');
 
     const fetchBooks = async() => {
         const response = await fetch(
@@ -42,23 +51,70 @@ const BookList = () => {
 
     return (
         <>
-            <h1>동영상 검색 목록</h1>
-            <input type="text" placeholder="검색어 입력" 
-            onChange={changeSearch}/>
-            <div>
-                {bookList.map((book) => (
-                    <>
-                        <p>{book.title}</p>
-                    </>
-                ))}
-            </div>
-            <ul>
-                {Array.from({length: pageCount.current}, (_, index) => (
-                    <>
-                        <li onClick={e => { setPage(index + 1) }}>{index + 1}</li>
-                    </>
-                ))}   
-            </ul>
+            <Box>
+                <Heading color={color}>
+                    <Icon as={PiVideoFill} boxSize={"1.5em"} />동영상 검색 목록
+                </Heading>
+
+                {
+                    colorMode === "light" ?
+                    <IconButton icon={<RiMoonClearFill />} onClick={toggleColorMode} /> :
+                    <IconButton icon={<PiSunFill />} onClick={toggleColorMode} />
+                }
+
+                <h1>동영상 검색 목록</h1>
+                <Input 
+                    type="text" 
+                    placeholder="검색어 입력" 
+                    onChange={changeSearch} 
+                    size="lg" 
+                    variant="filled" 
+                />
+                <input type="text" placeholder="검색어 입력" 
+                onChange={changeSearch} />
+                <TableContainer>
+                    <Table variant={"striped"} colorScheme='yellow'>
+                        <Thead>
+                            <Tr>
+                                <Th>No</Th>
+                                <Th>Title</Th>
+                                <Th>Author</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {bookList.map((book, index) => (
+                                <>
+                                    <Tr>
+                                        <Td>{(page - 1) * 10 + index + 1}</Td>
+                                        <Td>
+                                            <a href={book.url}>{book.title}</a>
+                                        </Td>
+                                        <Td>{book.author}</Td>
+                                    </Tr>
+                                </>
+                            ))}
+                        </Tbody>
+                        <Tfoot></Tfoot>
+                    </Table>
+                </TableContainer>
+                <HStack>
+                    {Array.from({length: pageCount.current}, (_, index) => (
+                        <>
+                            <Button 
+                                colorScheme={
+                                    page === index + 1 ? 
+                                    "pink" : buttonScheme
+                                }
+                                onClick={e => { 
+                                    setPage(index + 1); 
+                                }}
+                            >
+                                {index + 1}
+                            </Button>
+                        </>
+                    ))}   
+                </HStack>
+            </Box>
         </>
     );
 };
