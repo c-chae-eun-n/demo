@@ -1,21 +1,20 @@
-import { Box, Button, HStack, Heading, Icon, IconButton, Input, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, HStack, Heading, Icon, IconButton, Image, Input, Table, TableContainer, Tbody, Td, Text, Tfoot, Th, Thead, Tr, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { MdOutlineOndemandVideo } from "react-icons/md";
+import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import { PiSunDimThin, PiSunFill, PiSunThin, PiVideoFill } from 'react-icons/pi';
-import { RiMoonClearFill} from 'react-icons/ri';
+import { Link } from 'react-router-dom';
 
 const VideoList = () => {
     // useState는 화면 랜더링에 반영됨
     const [videoList, setVideoList] = useState([]);
     const [page, setPage] = useState(1);                // default 값 1
-    const [search, setSearch] = useState('달고나 커피');    // default 값 강아지똥
+    const [search, setSearch] = useState(' ');    // default 값 강아지똥
 
     // useRef는 화면 랜더링 반영되지 않는 참조값
     const pageCount = useRef(1);                  // 1page
 
     // Chakra UI 에서 제공하는 훅
-    const { colorMode, toggleColorMode } = useColorMode();
-    const color = useColorModeValue('pink.200', 'pink.100');
+    const color = useColorModeValue('pink.300', 'pink.100');
     const buttonScheme = useColorModeValue('yellow', 'yellow');
 
     const fetchVideos = async() => {
@@ -52,17 +51,11 @@ const VideoList = () => {
     return (
         <>
             <Box>
-                <Heading color={color}>
+                <Heading color={color} padding={"30px"}>
                     <Icon as={PiVideoFill} boxSize={"1.5em"} />동영상 검색 목록
                 </Heading>
 
-                {
-                    colorMode === "light" ?
-                    <IconButton icon={<RiMoonClearFill />} onClick={toggleColorMode} /> :
-                    <IconButton icon={<PiSunFill />} onClick={toggleColorMode} />
-                }
-
-                <h1>동영상 검색 목록</h1>
+                {/* <h1>동영상 검색 목록</h1> */}
                 <Input 
                     type="text" 
                     placeholder="검색어 입력" 
@@ -70,9 +63,56 @@ const VideoList = () => {
                     size="lg" 
                     variant="filled" 
                 />
-                <input type="text" placeholder="검색어 입력" 
-                onChange={changeSearch} />
-                <TableContainer>
+                {/* <input type="text" placeholder="검색어 입력" onChange={changeSearch} /> */}
+                <HStack justify='space-between' flexWrap='wrap' gap={"10px"} m={"40px 0px"} padding={"50px"}>
+                    {videoList.map((video, index) => (
+                        <Link to={video.url} key={video.url}>
+                            <Card maxW='md'>
+                                <CardHeader justify='center'>
+                                <Image
+                                    w={"400px"}
+                                    src={video.thumbnail}
+                                    alt={video.title}
+                                    borderRadius="lg"
+                                />
+                                </CardHeader>
+                                <CardBody>
+                                    <Text
+                                    fontWeight={"bold"}
+                                    textOverflow={"ellipsis"}
+                                    overflow={"hidden"}
+                                    lineHeight={"1em"}
+                                    height={"2em"}
+                                    >
+                                    {video.author}
+                                    </Text>
+                                    {video.title}
+                                </CardBody>
+                                
+                                <CardFooter
+                                    justify='space-between'
+                                    flexWrap='wrap'
+                                    sx={{
+                                    '& > button': {
+                                        minW: '136px',
+                                    },
+                                    }}
+                                >
+                                    <Button flex='1' variant='ghost' leftIcon={<BiLike />}>
+                                    Like
+                                    </Button>
+                                    <Button flex='1' variant='ghost' leftIcon={<BiChat />}>
+                                    Comment
+                                    </Button>
+                                    <Button flex='1' variant='ghost' leftIcon={<BiShare />}>
+                                    Share
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        </Link>
+                    ))}
+                </HStack>
+                {/* <TableContainer>
                     <Table variant={"striped"} colorScheme='yellow'>
                         <Thead>
                             <Tr>
@@ -96,8 +136,8 @@ const VideoList = () => {
                         </Tbody>
                         <Tfoot></Tfoot>
                     </Table>
-                </TableContainer>
-                <HStack>
+                </TableContainer> */}
+                <HStack justifyContent={"center"} margin={"50px"}>
                     {Array.from({length: pageCount.current}, (_, index) => (
                         <>
                             <Button 
