@@ -4,9 +4,9 @@ import { MdOutlineOndemandVideo } from "react-icons/md";
 import { PiSunDimThin, PiSunFill, PiSunThin, PiVideoFill } from 'react-icons/pi';
 import { RiMoonClearFill} from 'react-icons/ri';
 
-const BookList = () => {
+const VideoList = () => {
     // useState는 화면 랜더링에 반영됨
-    const [bookList, setBookList] = useState([]);
+    const [videoList, setVideoList] = useState([]);
     const [page, setPage] = useState(1);                // default 값 1
     const [search, setSearch] = useState('달고나 커피');    // default 값 강아지똥
 
@@ -18,7 +18,7 @@ const BookList = () => {
     const color = useColorModeValue('pink.200', 'pink.100');
     const buttonScheme = useColorModeValue('yellow', 'yellow');
 
-    const fetchBooks = async() => {
+    const fetchVideos = async() => {
         const response = await fetch(
             `https://dapi.kakao.com/v2/search/vclip?query=${search}&page=${page}`, 
             {
@@ -36,7 +36,7 @@ const BookList = () => {
         pageCount.current = pageCount.current > 15 ? 15 : pageCount.current;        // pageCount가 15가 넘어가면 15 아니면 냅둠 (최대 요청가능 페이지가 15라서)
         console.log(pageCount.current);
 
-        setBookList(data.documents);
+        setVideoList(data.documents);
     }
 
     const changeSearch = e => {
@@ -46,7 +46,7 @@ const BookList = () => {
     }
 
     useEffect(() => {
-        fetchBooks();
+        fetchVideos();
     }, [page, search]);
 
     return (
@@ -82,14 +82,14 @@ const BookList = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {bookList.map((book, index) => (
+                            {videoList.map((video, index) => (
                                 <>
                                     <Tr>
                                         <Td>{(page - 1) * 10 + index + 1}</Td>
                                         <Td>
-                                            <a href={book.url}>{book.title}</a>
+                                            <a href={video.url}>{video.title}</a>
                                         </Td>
-                                        <Td>{book.author}</Td>
+                                        <Td>{video.author}</Td>
                                     </Tr>
                                 </>
                             ))}
@@ -123,4 +123,4 @@ const BookList = () => {
 
 //<li onClick={e => { setPage(index + 1) }}>{index + 1}</li>
 // 핸들러 따로 정의하지 않고 즉시실행 함수를 넣어줌
-export default BookList;
+export default VideoList;
