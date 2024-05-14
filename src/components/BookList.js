@@ -26,6 +26,7 @@ const BookList = () => {
             }
         );
         const data = await response.json();
+        console.log(data);
 
         pageCount.current = data.meta.pageable_count % 10 > 0 ? data.meta.pageable_count / 10 + 1 : data.meta.pageable_count / 10;
         pageCount.current = Math.floor(pageCount.current);
@@ -83,7 +84,9 @@ const BookList = () => {
                                         />    
                                         </Td>
                                         <Td><a href={book.url}>{book.title}</a></Td>
-                                        <Td>{book.authors}</Td>
+                                        <Td>
+                                            {book.authors.length === 0 ? "저자 미상" : book.authors}
+                                        </Td>
                                         <Td>{book.publisher}</Td>
                                         <Td>{book.price}</Td>
                                     </Tr>
